@@ -1,15 +1,19 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import { router } from "./routers/router";
 
+dotenv.config({ path: ".env" });
 
-// configures dotenv to work in your application
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-const PORT = '8080';
+const PORT = process.env.PORT || 3001;
 
-app.get("/", (request: Request, response: Response) => { 
-  response.status(200).send("Hello World");
-}); 
+app.use(router);
 
 app.listen(PORT, () => { 
   console.log("Server running at PORT: ", PORT); 
