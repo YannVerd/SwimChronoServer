@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import 'dotenv/config';
 
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PW}@SwimChronoDB:27017`)
     .then(async () => {
