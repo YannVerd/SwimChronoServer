@@ -15,7 +15,8 @@ export const insertUser = async (req: Request, res: Response) => {
         .then(()=> {
             res.status(200).json({message: `${req.body.username} has been succesfully registered`})
         })
-        .catch(()=> {
+        .catch((err: any)=> {
+            console.error(err)
             res.status(400).json({message: "failed to register user in database"})
         })
 
