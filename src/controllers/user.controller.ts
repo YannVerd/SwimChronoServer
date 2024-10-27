@@ -7,7 +7,7 @@ export const insertUser = async (req: Request, res: Response) => {
     const user = new User();
     
     user.sessionId = req.body?.sessionId;
-    user.username = req.body.user;
+    user.username = req.body.username;
     user.email = req.body.email;
     user.password = await user.generateHash(req.body.password);
 

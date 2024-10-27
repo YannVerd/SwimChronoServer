@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import 'dotenv/config';
 
-mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PW}@SwimChronoDB:27017`)
+mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PW}@SwimChronoDB:27017/${process.env.DB_NAME}?authSource=admin`)
     .then(async () => {
         try {
             // Sync mongo indexes if needed
