@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import mongoose, { MongooseError } from "mongoose";
+import { generateAccessToken } from "../auth/token";
 
 const User = mongoose.model('User')
 
@@ -33,7 +34,8 @@ export const loginUser = async (req: Request, res: Response ) => {
         else{
             user.password = doc.password;
             if(user.validPassword(req.body.password)){
-                res.status(200).json({username: doc.username, email: doc.email})
+                const token = generateAccessToken(doc.userId)
+                res.status(200).json({user: {username: doc.username, email: doc.email}, token: token})
             }else{
                 res.status(404).json({message: "Wrong password. Please retry"})
             }

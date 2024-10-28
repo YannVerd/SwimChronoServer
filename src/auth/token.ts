@@ -1,34 +1,33 @@
-import jwt from 'jsonwebtoken';
-import { Request, Response } from "express";
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { NextFunction, Request, Response } from "express";
 import config from './auth.config.ts';
-import { JsonWebTokenError } from 'jsonwebtoken';
-import { isNamedExportBindings, resolveTypeReferenceDirective } from 'typescript';
 
 
-export const generateAccessToken = (userId: string, username: string) => {
+
+export const generateAccessToken = (userId: string) => {
   const payload = {
     userId: userId,
-    username: username
   };
 
-  return jwt.sign(payload, config.secret, {}); // no expiration date
+  return jwt.sign(payload, config.secret, {expiresIn: '1 days'}); 
 };
 
-
-export const verifyToken = (req: { userId: null; sessionId: any, body:  {username: string} }, res: Response, next: () => any) => {
-  const token = req.sessionId;
-
-  if (!token) {
-    return res.status(403).send({ message: 'No token provided!' });
-  }
-
-  jwt.verify(token, config.secret, (err: JsonWebTokenError, decoded: {userId: string, username: string}) => {
-    if (err || !decoded) {
-      return next();
+export interface CustomRequest extends Request {
+  token: string | JwtPayload;
+ }
+export const auth = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+ 
+    if (!token) {
+      throw new Error("No token provided");
     }
-
-    req.body.username = decoded.username;
-
-    return next();
-  });
-};
+ 
+    const decoded = jwt.verify(token, config.secret);
+    (req as CustomRequest).token = decoded;
+ 
+    next();
+  } catch (err) {
+    res.status(401).json({message: "please authenticate"});
+  }
+ };
