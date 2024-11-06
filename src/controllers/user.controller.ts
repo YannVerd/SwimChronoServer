@@ -21,8 +21,6 @@ export const registerUser = async (req: Request, res: Response) => {
             console.error(err)
             res.status(400).json({message: "failed to register user in database"})
         })
-
-    
 }
 
 export const loginUser = async (req: Request, res: Response ) => {
@@ -45,8 +43,4 @@ export const loginUser = async (req: Request, res: Response ) => {
         .catch(err => {
             res.status(404).json({message: "Wrong email. No user found"})
         })
-            
-            
-
-    
 }
