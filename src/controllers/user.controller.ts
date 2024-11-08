@@ -25,15 +25,21 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response ) => {
     const user = new User();
-    console.log(req.body)
     User.findOne({email: req.body.email})
         .then(doc => {
             if(doc){
                 user.password = doc.password
                 if(user.validPassword(req.body.password)){
                     console.log(doc)
-                    const token = generateAccessToken(doc)
-                    res.status(200).json({user: {username: doc.username, email: doc.email, id: doc._id.toString()}, token: token})
+                    const {token, xsrfToken} = generateAccessToken(doc)
+                    res.cookie('accessToken', token,
+                        {
+                            httpOnly: true,
+                            maxAge: 86400000 //one day
+                            // add secure: true for production
+                        }
+                    )
+                    res.status(200).json({user: {username: doc.username, email: doc.email, id: doc._id.toString()}, xsrfToken})
                 }else{
                     res.status(404).json({message: "Wrong password. Please retry"})
                 }
