@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import mongoose, { MongooseError } from "mongoose";
-import { generateAccessToken } from "../auth/token";
+import { CustomRequest, generateAccessToken } from "../auth/token";
 
 
 const User = mongoose.model('User')
@@ -25,12 +25,14 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response ) => {
     const user = new User();
+    console.log(req.body)
     User.findOne({email: req.body.email})
         .then(doc => {
             if(doc){
                 user.password = doc.password
                 if(user.validPassword(req.body.password)){
-                    const token = generateAccessToken(doc.userId)
+                    console.log(doc)
+                    const token = generateAccessToken(doc)
                     res.status(200).json({user: {username: doc.username, email: doc.email, id: doc._id.toString()}, token: token})
                 }else{
                     res.status(404).json({message: "Wrong password. Please retry"})
@@ -41,6 +43,11 @@ export const loginUser = async (req: Request, res: Response ) => {
             
         })
         .catch(err => {
+            console.error(err)
             res.status(404).json({message: "Wrong email. No user found"})
         })
+}
+
+export const authUser = async (req: Request, res: Response) => {
+    res.status(200).json({token: req.body.token})
 }
