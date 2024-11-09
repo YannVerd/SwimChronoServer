@@ -25,21 +25,19 @@ export interface CustomRequest extends Request {
 
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req)
     if (!req.cookies || !req.cookies.accessToken) {
       throw new Error("Missing token in cookie");
     }
     const accessToken = req.cookies.accessToken;
 
     const token = req.header('Authorization')?.replace('Bearer ', '');
- 
+   
     if (!token) {
       throw new Error("No token provided, please authenticate");
     }
  
     const decoded = jwt.verify(token, config.secret);
-    console.log('decoded token:', decoded)
-
+   
     // if(accessToken !== decoded.xsrfToken){
     //   throw new Error("Bad xsrf token")
     // }

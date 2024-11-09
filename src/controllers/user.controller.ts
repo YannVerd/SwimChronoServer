@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose, { MongooseError } from "mongoose";
+import mongoose from "mongoose";
 import { CustomRequest, generateAccessToken } from "../auth/token";
 
 
@@ -30,16 +30,15 @@ export const loginUser = async (req: Request, res: Response ) => {
             if(doc){
                 user.password = doc.password
                 if(user.validPassword(req.body.password)){
-                    console.log(doc)
                     const {token, xsrfToken} = generateAccessToken(doc)
-                    res.cookie('accessToken', token,
+                    res.cookie('accessToken', xsrfToken,
                         {
                             httpOnly: true,
                             maxAge: 86400000 //one day
                             // add secure: true for production
                         }
                     )
-                    res.status(200).json({user: {username: doc.username, email: doc.email, id: doc._id.toString()}, xsrfToken})
+                    res.status(200).json({user: {username: doc.username, email: doc.email, id: doc._id.toString()}, token})
                 }else{
                     res.status(404).json({message: "Wrong password. Please retry"})
                 }
