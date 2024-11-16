@@ -36,11 +36,11 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error("No token provided, please authenticate");
     }
  
-    const decoded = jwt.verify(token, config.secret);
+    const decoded = jwt.verify(token, config.secret) as JwtPayload;
    
-    // if(accessToken !== decoded.xsrfToken){
-    //   throw new Error("Bad xsrf token")
-    // }
+    if(accessToken !== decoded.xsrfToken){
+      throw new Error("Bad xsrf token")
+    }
     
     req.body.token = decoded;
  
