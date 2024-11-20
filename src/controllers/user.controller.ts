@@ -56,3 +56,18 @@ export const loginUser = async (req: Request, res: Response ) => {
 export const authUser = async (req: Request, res: Response) => {
     res.status(200).json({token: req.body.token})
 }
+export const logout = async (req: Request, res: Response) => {
+    console.log("bou")
+    try{
+        res.clearCookie('accessToken', {
+            httpOnly: true,
+            secure: true, 
+        }) 
+        console.log('Cookies after clear:', req.cookies);
+        res.status(200).json({ message: 'Logged out successfully' });
+    }
+    catch(err){
+        console.error('clear user cookie', err)
+        res.status(404).json({message: "Clear cookie failed"})
+    }
+}
