@@ -57,7 +57,6 @@ export const authUser = async (req: Request, res: Response) => {
     res.status(200).json({token: req.body.token})
 }
 export const logout = async (req: Request, res: Response) => {
-    console.log("bou")
     try{
         res.clearCookie('accessToken', {
             httpOnly: true,

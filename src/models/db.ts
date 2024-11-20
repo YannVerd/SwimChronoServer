@@ -7,6 +7,7 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PW}@SwimChro
             // Sync mongo indexes if needed
             // (Remove indexes that have been remove from schema)
             const User = mongoose.model('User');
+            const Athlete = mongoose.model('Athlete');
           } catch (err) {
             console.error('index update err : ', err);
           }
